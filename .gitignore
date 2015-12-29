@@ -1,4 +1,5 @@
 build/*
 packaging/vendor/*
 packaging/*.tar.gz
+.DS_Store
 

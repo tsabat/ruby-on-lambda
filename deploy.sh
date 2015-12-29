@@ -11,13 +11,13 @@ TRAVELING_RUBY_VERSION="20150210-2.1.5"
 # Set this up in your ~/.aws/credentials
 # Use a profile that has the ability to put 
 # objects on S3 and update Lambda functions
-AWS_PROFILE="user-with-s3-and-lambda-privileges"
+AWS_PROFILE="ruby_on_lambda"
 # S3 Bucket where Lambda will find the Deployment Package
-AWS_BUCKET="your.bucket.net"
+AWS_BUCKET="codepen-lambda-functions"
 # The S3 Key of the Deployment Package zip file
 AWS_KEY="lambda-functions/$APP_NAME-$APP_VERSION.zip"
 # The Lambda Function name, created already
-AWS_LAMBDA_FUNCTION="yourLambdaFunctionName"
+AWS_LAMBDA_FUNCTION="rubyOnLambdaSayHelloWorld"
 
 ########################
 ### Helper Functions ###
@@ -145,5 +145,7 @@ aws s3api put-object --bucket $AWS_BUCKET --key $AWS_KEY --body $package_zip --p
 banner "Updating Lambda"
 aws lambda update-function-code --function-name $AWS_LAMBDA_FUNCTION --s3-bucket $AWS_BUCKET --s3-key $AWS_KEY --profile $AWS_PROFILE
 
+banner "Dry Running"
+aws lambda invoke --function-name $AWS_LAMBDA_FUNCTION --profile $AWS_PROFILE --log-type Tail - | jq -r .LogResult | base64 --decode
 
 banner "Done!"
